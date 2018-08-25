@@ -30,3 +30,24 @@ int socket_create(int port) {
     }
     return socket_fd;
 }
+
+int socket_connect(int port, char *host) {
+    int socket_fd;
+    socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (socket_fd < 0) {
+        perror("socket_create ");
+        return -1;
+    }
+
+    struct sockaddr_in dest_addr = {0};
+    dest_addr.sin_family = AF_INET;
+    dest_addr.sin_port = htons(port);
+    dest_addr.sin_addr.s_addr = inet_addr(host);
+    
+    if (connect(socket_fd, (struct sockaddr *)&dest_addr, sizeof(dest_addr)) < 0) {
+        perror("connect");
+        return -1;
+    }
+    return socket_fd;
+}
+
