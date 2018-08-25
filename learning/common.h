@@ -38,7 +38,6 @@
 #define MAX_SIZE 1034
 #define MASTER_PORT 6666
 
-int get_conf_value(char *pathname, char *key_name, char *value);//获取配置信息；
 int socket_create(int port);//创建套接字；
 int socket_accept(int sock_listen);//等待连接；
 int socket_connect(int port, char *host);//建立连接；端口号，地址；
