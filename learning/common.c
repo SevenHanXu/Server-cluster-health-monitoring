@@ -119,3 +119,29 @@ int recv_response(int socket_fd) {
     */
     return code;
 }
+
+int generate_name(int code, char *logname, char *log_dir) {
+    //获取文件信息（标识码），完整文件路径，文件目录；
+    strcpy(logname, log_dir);//把文件目录拷贝到logname上；
+    switch (code) {
+        case 100:
+            strcat(logname, "/cpu.log");//将"/cpu.log"拼接到logname上，这样logname就显示完整文件路径；
+            break;
+        case 101:
+            strcat(logname, "/mem.log");
+            break;
+        case 102:
+            strcat(logname, "/disk.log");
+            break;
+        case 103:
+            strcat(logname, "/sysinfo.log");
+            break;
+        case 104:
+            strcat(logname, "/users.log");
+            break;
+        case 105:
+            strcat(logname, "/proclog.log");
+            break;
+    }
+    return 0;
+}
