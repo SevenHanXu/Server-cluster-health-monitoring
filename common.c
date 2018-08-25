@@ -51,3 +51,14 @@ int socket_connect(int port, char *host) {
     return socket_fd;
 }
 
+
+int send_response(int socket_fd, int retcode) {
+    send(socket_fd, &retcode, 1, 0);
+    return 0;
+}
+
+int recv_response(int socket_fd) {
+    int code = 0;
+    recv(socket_fd, &code, 1, 0);
+    return code;
+}
