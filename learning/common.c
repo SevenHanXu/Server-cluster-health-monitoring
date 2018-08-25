@@ -63,4 +63,34 @@ int socket_create(int port) {
     return socket_fd;
 }
 
+int socket_connect(int port, char *host) {
+    /*bool socket_connect ( resource $socket , string $address [, int $port = 0 ] )
+     参数：
+     address   如果参数 socket 是 AF_INET ， 那么参数 address 则可以是一个点分四组表示法（例如 127.0.0.1 ）
+               IPv4 地址； 如果支持 IPv6 并且 socket 是 AF_INET6，那么 address也可以是有效的 IPv6 地址（例如 
+               ::1）；如果套接字类型为 AF_UNIX ，那么 address 也可以是一个Unix 套接字。
+     port       参数 port 仅仅用于 AF_INET 和 AF_INET6 套接字连接的时候，并且是在此情况下是需要强制说明连接对
+               应的远程服务器上的端口号。
+    成功时返回 TRUE， 或者在失败时返回 FALSE。
+    */
+    int socket_fd;
+    socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (socket_fd < 0) {
+        perror("socket_create ");
+        return -1;
+    }
+
+    struct sockaddr_in dest_addr = {0};
+    dest_addr.sin_family = AF_INET;
+    dest_addr.sin_port = htons(port);
+    dest_addr.sin_addr.s_addr = inet_addr(host);
+    
+    if (connect(socket_fd, (struct sockaddr *)&dest_addr, sizeof(dest_addr)) < 0) {
+        perror("connect"); 
+        return -1;
+    }
+    
+    return socket_fd;
+}
+
  
