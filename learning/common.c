@@ -92,3 +92,30 @@ int socket_connect(int port, char *host) {
     
     return socket_fd;
 }
+
+int send_response(int socket_fd, int retcode) {//发送标识码；
+    send(socket_fd, &retcode, 1, 0);
+    /*int send( SOCKET s, const char FAR *buf, int len, int flags );
+    不论是客户还是服务器应用程序都用send函数来向TCP连接的另一端发送数据。
+    客户程序一般用send函数向服务器发送请求，而服务器则通常用send函数来向客户程序发送应答。
+    （1）第一个参数指定发送端套接字描述符;
+    （2）第二个参数指明一个存放应用程序要发送数据的缓冲区；
+    （3）第三个参数指明实际要发送的数据的字节数；
+    （4）第四个参数一般置0。
+    */
+    return 0;
+}
+
+
+int recv_response(int socket_fd) {
+    int code = 0;
+    recv(socket_fd, &code, 1, 0);
+    /*nt recv( SOCKET s, char FAR *buf, int len, int flags );
+     * 不论是客户还是服务器应用程序都用recv函数从TCP连接的另一端接收数据。
+    （1）第一个参数指定接收端套接字描述符；
+    （2）第二个参数指明一个缓冲区，该缓冲区用来存放recv函数接收到的数据；
+    （3）第三个参数指明buf的长度；
+    （4）第四个参数一般置0。
+    */
+    return code;
+}
