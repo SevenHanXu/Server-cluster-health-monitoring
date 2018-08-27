@@ -38,13 +38,33 @@
 #define MAX_SIZE 1034
 #define MASTER_PORT 6666
 
+#define IP_NUM 10
 #define FILE_NUM 6
 
+char ip_addrs[IP_NUM][15] = {
+   "192.168.1.40" , 
+   "192.168.1.41" , 
+   "192.168.1.42" , 
+   "192.168.1.43" ,
+   "192.168.1.44" ,
+   "192.168.1.45" ,
+   "192.168.1.46" ,
+   "192.168.1.47" ,
+   "192.168.1.48" ,
+   "192.168.1.49" ,
+};
+
+int get_conf_value(char *pathname, char *key_name, char *value);
 int socket_create(int port);
+int socket_accept(int sock_listen);
 int socket_connect(int port, char *host);
 int recv_data(int sockfd, char *buf, int bufsize);
 int send_response(int sockfd, int req);
 int recv_response(int sockfd);
 int generate_logname(int code, char *logname, char *logdir);
+int check_size(char *filename, int size, char *dir);
+int write_Pi_log(char *PiHealthLog, const char *format, ...);
+
+
 
 #endif
