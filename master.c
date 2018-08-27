@@ -52,8 +52,10 @@ int main(int argc, char **argv) {
         socket_fd = socket_connect(port, ip_addr);
         if (socket_fd < 0) {
             printf("pi%d socket_fd error\n", addr_index);
-            sleep(5);
+            sleep(3);
             continue;
+        } else {
+            printf("pi%d long connect success\n", addr_index);
         }
         for (int i = 0; i < FILE_NUM; i++) {
             int retcode, pid;
@@ -65,7 +67,7 @@ int main(int argc, char **argv) {
             if (pid == 0) {
                 int socket_data = socket_connect(port + 1, ip_addr);
                 if (socket_data < 0) {
-                    printf("socket_data error\n");
+                    printf("%d socket_data error\n", i);
                     exit(1);
                 }
                 send_response(socket_fd, 200);
@@ -76,7 +78,7 @@ int main(int argc, char **argv) {
             } else {
                 wait(NULL);
                 send_response(socket_fd, 201);
-                printf("pi%d connect end\n", addr_index); 
+                printf("pi%d %d connect end\n", addr_index, i); 
             }
         }
     }

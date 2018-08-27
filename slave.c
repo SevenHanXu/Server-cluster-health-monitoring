@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     struct sockaddr_in client_addr;
     socklen_t len = sizeof(client_addr);
 
-    while ((socket_fd = accept(server_listen, (struct sockaddr*)&client_addr, &len)) < 0) {
+    while (socket_fd = accept(server_listen, (struct sockaddr*)&client_addr, &len)) {
         if (socket_fd < 0) {
             printf("accept error\n");
             continue;
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
         char buff_peer[64] = {0};
         inet_ntop(AF_INET, (void *)&client_addr.sin_addr, buff_peer, 63);
 
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < FILE_NUM; i++){
             int retcode = 100 + i, socket_data;
             send_response(socket_fd, retcode);
             pid = fork();
