@@ -45,32 +45,39 @@ int main(int argc, char **argv) {
     } else {
         printf("Use : ./master ip_addr port\n");
     }
-    
-    socket_fd = socket_connect(port, ip_addr);
-    if (socket_fd < 0) {
-        printf("socket_fd error\n");
-    }
+    int addr_index = 0;
     while (1) {
-        int retcode, pid;
-        if ((retcode = recv_response(socket_fd)) <= 0) {
-            break;
+        ip_addr = ip_addrs[addr_index]; 
+        addr_index = (addr_index + 1) % IP_NUM;
+        socket_fd = socket_connect(port, ip_addr);
+        if (socket_fd < 0) {
+            printf("pi%d socket_fd error\n", addr_index);
+            sleep(5);
+            continue;
         }
-        printf("retcode: %d\n", retcode);
-        pid = fork();
-        if (pid == 0) {
-            int socket_data = socket_connect(port + 1, ip_addr);
-            if (socket_data < 0) {
-                printf("socket_data error\n");
-                exit(1);
+        for (int i = 0; i < FILE_NUM; i++) {
+            int retcode, pid;
+            if ((retcode = recv_response(socket_fd)) <= 0) {
+                break;
             }
-            send_response(socket_fd, 200);
-            printf("send_response\n");
-            master_get(socket_data, retcode, ip_addr);
-            close(socket_data);
-            exit(0);
-        } else {
-            wait(NULL);
-            send_response(socket_fd, 201);
+            printf("retcode: %d\n", retcode);
+            pid = fork();
+            if (pid == 0) {
+                int socket_data = socket_connect(port + 1, ip_addr);
+                if (socket_data < 0) {
+                    printf("socket_data error\n");
+                    exit(1);
+                }
+                send_response(socket_fd, 200);
+                printf("send_response\n");
+                master_get(socket_data, retcode, ip_addr);
+                close(socket_data);
+                exit(0);
+            } else {
+                wait(NULL);
+                send_response(socket_fd, 201);
+                printf("pi%d connect end\n", addr_index); 
+            }
         }
     }
     return 0;

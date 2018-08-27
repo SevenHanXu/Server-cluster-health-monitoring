@@ -35,30 +35,34 @@ int main(int argc, char **argv) {
     data_listen = socket_create(port + 1);
     struct sockaddr_in client_addr;
     socklen_t len = sizeof(client_addr);
-    if ((socket_fd = accept(server_listen, (struct sockaddr*)&client_addr, &len)) < 0) {
-        printf("accept error\n");
-    }
 
-    char buff_peer[64] = {0};
-    inet_ntop(AF_INET, (void *)&client_addr.sin_addr, buff_peer, 63);
-
-    for (int i = 0; i < 6; i++){
-        int retcode = 100 + i, socket_data;
-        send_response(socket_fd, retcode);
-        pid = fork();
-        if (pid == 0) {
-            if ((socket_data = accept(data_listen, (struct sockaddr*)&client_addr, &len)) < 0)
-                break;
-            recv_response(socket_fd);
-            send_log(socket_data, retcode, buff_peer);
-            close(socket_data);
-            exit(0);
-        } else {
-            wait(NULL);
-            recv_response(socket_fd);
+    while ((socket_fd = accept(server_listen, (struct sockaddr*)&client_addr, &len)) < 0) {
+        if (socket_fd < 0) {
+            printf("accept error\n");
+            continue;
         }
+
+        char buff_peer[64] = {0};
+        inet_ntop(AF_INET, (void *)&client_addr.sin_addr, buff_peer, 63);
+
+        for (int i = 0; i < 6; i++){
+            int retcode = 100 + i, socket_data;
+            send_response(socket_fd, retcode);
+            pid = fork();
+            if (pid == 0) {
+                if ((socket_data = accept(data_listen, (struct sockaddr*)&client_addr, &len)) < 0)
+                    break;
+                recv_response(socket_fd);
+                send_log(socket_data, retcode, buff_peer);
+                close(socket_data);
+                exit(0);
+            } else {
+                wait(NULL);
+                recv_response(socket_fd);
+            }
+        }
+        close(socket_fd);
     }
-    close(socket_fd);
     close(server_listen);
     close(data_listen);
     return 0;
