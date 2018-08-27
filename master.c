@@ -48,15 +48,17 @@ int main(int argc, char **argv) {
     int addr_index = 0;
     while (1) {
         ip_addr = ip_addrs[addr_index]; 
-        addr_index = (addr_index + 1) % IP_NUM;
         socket_fd = socket_connect(port, ip_addr);
         if (socket_fd < 0) {
-            printf("pi%d socket_fd error\n", addr_index);
+            printf("pi%d socket_fd error\n", addr_index + 1);
             sleep(3);
+            addr_index = (addr_index + 1) % IP_NUM;
             continue;
         } else {
-            printf("pi%d long connect success\n", addr_index);
+            printf("pi%d long connect success\n", addr_index + 1);
+            addr_index = (addr_index + 1) % IP_NUM;
         }
+
         for (int i = 0; i < FILE_NUM; i++) {
             int retcode, pid;
             if ((retcode = recv_response(socket_fd)) <= 0) {
@@ -81,6 +83,7 @@ int main(int argc, char **argv) {
                 printf("pi%d %d connect end\n", addr_index, i); 
             }
         }
+        sleep(3);
     }
     return 0;
 }
