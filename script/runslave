@@ -1,0 +1,10 @@
+#!/bin/bash
+for i in `seq 1 10`;do
+    echo "gcc in pi$i"
+    ssh pi$i "cd pihealth;gcc slave.c -o slave"
+done
+echo "gcc end"
+for i in `seq 1 10`;do
+    echo "run in $i"
+    ssh pi$i "cd pihealth;./slave 1>/dev/bsg/null &"
+done;

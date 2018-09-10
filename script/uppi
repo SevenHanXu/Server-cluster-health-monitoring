@@ -1,0 +1,7 @@
+#!/bin/bash
+
+Command="../../Server-cluster-health-monitoring/*"
+
+for i in `seq 1 10`; do
+    scp -r $Command pi$i:~/pihealth/
+done;
